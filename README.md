@@ -19,8 +19,8 @@ The site borrows structure and restraint from photographers who treat the websit
 
 Yes. This repo is already set up for it.
 
-1. Commit and push to `main`
-2. In the repo: **Settings → Pages → Source → GitHub Actions**
-3. The workflow in `.github/workflows/pages.yml` publishes the site on every push
+1. Push to `main`
+2. In the repo: **Settings → Pages → Deploy from a branch**
+3. Branch `main`, folder `/ (root)`
 
 The current pictures are Unsplash stand-ins. Swap them for your own files in `assets/work/` and update titles, years, and the contact email in `js/data.js`.
