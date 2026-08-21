@@ -267,7 +267,7 @@ const playParallax = () => {
 
 const playMagnetic = () => {
   if (!fine || reduced) return;
-  $$(".ghost, .nav a, .wordmark, .email").forEach((el) => {
+  $$(".ghost, .email").forEach((el) => {
     el.addEventListener("pointermove", (e) => {
       const r = el.getBoundingClientRect();
       const x = e.clientX - (r.left + r.width / 2);
@@ -358,17 +358,6 @@ const playPageLinks = () => {
 };
 
 const playPage = () => {
-  const header = $(".site-header");
-  if (header && !reduced) {
-    animate($$(".site-header .wordmark, .nav a, .nav-toggle"), {
-      opacity: [0, 1],
-      y: [-14, 0],
-      delay: stagger(60),
-      duration: 700,
-      ease: "out(3)",
-    });
-  }
-
   $$(".page-hero h1, .series-top h1, .contact-block .email").forEach((el) => {
     const chars = splitChars(el);
     if (reduced) return;
@@ -516,6 +505,59 @@ const playCurtain = () => {
   });
 };
 
+const playMenu = () => {
+  const panel = $(".mobile-nav");
+  const toggle = $(".nav-toggle");
+  if (!panel) return;
+  const links = $$("a", panel);
+  let open = panel.classList.contains("is-open");
+  let anim;
+  const setMenu = (next) => {
+    if (next === open) return;
+    open = next;
+    anim?.pause();
+    toggle?.setAttribute("aria-expanded", String(open));
+    if (toggle) toggle.textContent = open ? "Close" : "Menu";
+    if (reduced) {
+      panel.classList.toggle("is-open", open);
+      panel.style.opacity = open ? "1" : "0";
+      panel.style.visibility = open ? "visible" : "hidden";
+      return;
+    }
+    if (open) {
+      panel.classList.add("is-open");
+      panel.style.visibility = "visible";
+      anim = createTimeline({ defaults: { ease: "out(3)" } });
+      anim.add(panel, { opacity: [0, 1], y: [-14, 0], duration: 420 }, 0);
+      if (links.length) {
+        anim.add(
+          links,
+          {
+            opacity: [0, 1],
+            x: [-16, 0],
+            delay: stagger(55),
+            duration: 420,
+          },
+          80
+        );
+      }
+    } else {
+      anim = animate(panel, {
+        opacity: 0,
+        y: -10,
+        duration: 280,
+        ease: "in(2)",
+        onComplete: () => {
+          panel.classList.remove("is-open");
+          panel.style.visibility = "hidden";
+        },
+      });
+    }
+  };
+  window.KM_setMenu = setMenu;
+};
+
+playMenu();
 playCurtain();
 playIntro();
 if (!$(".intro") || $(".intro").classList.contains("is-gone")) playHero();
