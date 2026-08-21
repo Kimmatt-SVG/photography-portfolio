@@ -178,7 +178,7 @@ button {
   display: grid;
   place-items: center;
   text-align: center;
-  transition: opacity 0.9s var(--ease), visibility 0.9s var(--ease);
+  overflow: hidden;
 }
 
 .intro.is-gone {
@@ -192,6 +192,17 @@ button {
   display: grid;
   gap: 1.5rem;
   justify-items: center;
+  z-index: 1;
+}
+
+.intro-rule {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: min(42vw, 280px);
+  height: 1px;
+  background: rgba(243, 239, 230, 0.45);
+  transform-origin: center;
 }
 
 .intro h1 {

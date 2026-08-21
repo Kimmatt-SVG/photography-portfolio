@@ -1,4 +1,4 @@
-import { animate, createTimeline, stagger } from "https://cdn.jsdelivr.net/npm/animejs@4.3.6/+esm";
+import { animate, createTimeline, stagger, onScroll } from "https://cdn.jsdelivr.net/npm/animejs@4.3.6/+esm";
 
 const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
 const fine = matchMedia("(pointer: fine)").matches;
@@ -55,6 +55,9 @@ const playIntro = () => {
 
   const kicker = $(".intro-kicker");
   const enter = $(".enter");
+  const rule = $(".intro-rule");
+  const inner = $(".intro-inner");
+  const mark = $(".intro-mark");
   const lines = $$(".intro h1 .line");
   const chars = lines.flatMap((line) => splitChars(line));
   const rings = $$(".intro-mark .ring");
@@ -62,16 +65,25 @@ const playIntro = () => {
   const field = document.createElement("div");
   field.className = "intro-orbs";
   field.setAttribute("aria-hidden", "true");
-  for (let i = 0; i < 14; i += 1) {
+  for (let i = 0; i < 12; i += 1) {
     const orb = document.createElement("span");
     orb.className = "orb";
+    orb.style.left = `${rand(8, 92)}%`;
+    orb.style.top = `${rand(10, 90)}%`;
     field.append(orb);
   }
   intro.append(field);
 
   let leaving = false;
   let introTl;
-  const finish = () => window.KM_markEntered?.();
+  const finish = () => {
+    if (intro.classList.contains("is-gone")) {
+      playHero();
+      return;
+    }
+    window.KM_markEntered?.();
+    playHero();
+  };
   const leave = () => {
     if (leaving || intro.classList.contains("is-gone")) return;
     leaving = true;
@@ -80,7 +92,7 @@ const playIntro = () => {
       finish();
       return;
     }
-    const safety = setTimeout(finish, 1600);
+    const safety = setTimeout(finish, 1400);
     const out = createTimeline({
       defaults: { ease: "in(3)" },
       onComplete: () => {
@@ -89,17 +101,21 @@ const playIntro = () => {
       },
     });
     if (chars.length) {
-      out.add(chars, {
-        y: "-120%",
-        opacity: 0,
-        duration: 640,
-        delay: stagger(16, { from: "center" }),
-      });
+      out.add(
+        chars,
+        {
+          y: "110%",
+          opacity: 0,
+          duration: 520,
+          delay: stagger(12, { from: "center" }),
+        },
+        0
+      );
     }
-    const orbs = $$(".orb");
-    if (orbs.length) out.add(orbs, { scale: 0, opacity: 0, duration: 420, delay: stagger(12) }, 0);
-    out.add([kicker, enter, ".intro-mark"].filter(Boolean), { opacity: 0, duration: 480 }, 60);
-    out.add(intro, { opacity: 0, duration: 700 }, 160);
+    out.add([kicker, enter, rule, mark].filter(Boolean), { opacity: 0, duration: 360 }, 40);
+    out.add($$(".orb", intro), { opacity: 0, duration: 280 }, 0);
+    out.add(inner, { scale: 0.96, duration: 420 }, 0);
+    out.add(intro, { opacity: 0, duration: 640 }, 180);
   };
   window.KM_playIntroLeave = leave;
 
@@ -112,44 +128,39 @@ const playIntro = () => {
   });
 
   introTl = createTimeline({ defaults: { ease: "out(3)" } });
-  const tl = introTl;
-  tl.add(".intro-mark", { opacity: [0, 1], duration: 500 }, 0);
-  tl.add(
+  introTl.add(mark, { opacity: [0, 1], scale: [0.88, 1], duration: 700 }, 0);
+  introTl.add(
     rings,
     {
       strokeDashoffset: 0,
-      duration: 1400,
-      delay: stagger(160),
+      duration: 1300,
+      delay: stagger(140),
       ease: "inOut(2)",
     },
     80
   );
-  tl.add(
+  introTl.add(
     chars,
     {
       y: ["110%", "0%"],
       opacity: [0, 1],
-      rotate: [8, 0],
-      duration: 880,
-      delay: stagger(26),
+      duration: 820,
+      delay: stagger(24),
     },
-    240
+    120
   );
-  tl.add(kicker, { opacity: [0, 1], y: [14, 0], letterSpacing: ["0.7em", "0.42em"], duration: 900 }, 160);
-  tl.add(enter, { opacity: [0, 1], y: [18, 0], duration: 700 }, "-=420");
-  tl.add(".intro-mark", { rotate: "1turn", duration: 28000, ease: "linear", loop: true }, 800);
-  tl.add(".ring-b", { rotate: "-1turn", duration: 18000, ease: "linear", loop: true }, 800);
+  introTl.add(kicker, { opacity: [0, 1], y: [16, 0], duration: 700 }, 80);
+  if (rule) introTl.add(rule, { scaleX: [0, 1], duration: 720, ease: "inOut(3)" }, 360);
+  introTl.add(enter, { opacity: [0, 1], y: [18, 0], duration: 680 }, 480);
+  introTl.add(mark, { rotate: "1turn", duration: 28000, ease: "linear", loop: true }, 800);
 
-  $$(".orb").forEach((orb, i) => {
-    orb.style.left = `${rand(6, 94)}%`;
-    orb.style.top = `${rand(8, 92)}%`;
+  $$(".orb", intro).forEach((orb, i) => {
     animate(orb, {
-      opacity: [0, 0.55, 0.15],
-      scale: [0, 1, 0.7],
-      x: () => rand(-40, 40),
-      y: () => rand(-50, 50),
-      duration: () => rand(4000, 8000),
-      delay: i * 90,
+      opacity: [0, 0.5, 0.12],
+      x: () => rand(-36, 36),
+      y: () => rand(-40, 40),
+      duration: () => rand(4200, 7600),
+      delay: i * 80,
       ease: "inOutSine",
       loop: true,
       alternate: true,
@@ -157,23 +168,34 @@ const playIntro = () => {
   });
 };
 
+let heroPlayed = false;
 const playHero = () => {
   const hero = $(".hero");
-  if (!hero || reduced) return;
+  if (!hero || reduced || heroPlayed) return;
+  heroPlayed = true;
   const img = $("img", hero);
   const copy = $$(".hero-copy p, .hero-copy h2, .scroll-hint");
   if (img) {
-    animate(img, { scale: [1.18, 1.04], duration: 2800, ease: "out(2)" });
-    animate(hero, {
-      clipPath: ["inset(0 0 100% 0)", "inset(0 0 0% 0)"],
-      duration: 1200,
-      ease: "inOut(3)",
-    });
+    animate(img, { scale: [1.12, 1], duration: 2400, ease: "out(2)" });
+    try {
+      animate(img, {
+        y: 72,
+        ease: "linear",
+        autoplay: onScroll({
+          target: hero,
+          enter: "top top",
+          leave: "bottom top",
+          sync: 0.12,
+        }),
+      });
+    } catch (err) {
+      /* scroll sync is optional */
+    }
   }
   animate(copy, {
     opacity: [0, 1],
     y: [28, 0],
-    delay: stagger(90, { start: 480 }),
+    delay: stagger(90, { start: 240 }),
     duration: 820,
     ease: "out(3)",
   });
@@ -193,10 +215,8 @@ const playHero = () => {
     hero.addEventListener("pointermove", (e) => {
       const r = hero.getBoundingClientRect();
       const px = (e.clientX - r.left) / r.width - 0.5;
-      const py = (e.clientY - r.top) / r.height - 0.5;
       animate(img, {
         x: px * 24,
-        y: py * 16,
         duration: 650,
         ease: "out(3)",
       });
@@ -231,14 +251,10 @@ const playProgress = () => {
 
 const playParallax = () => {
   if (reduced) return;
-  const heroImg = $(".hero img");
   const frames = $$(".frame img, .about-photo img");
   window.addEventListener(
     "scroll",
     () => {
-      if (heroImg) {
-        animate(heroImg, { y: scrollY * 0.18, duration: 0 });
-      }
       frames.forEach((img, i) => {
         const rect = img.getBoundingClientRect();
         const p = (rect.top / innerHeight - 0.5) * (i % 2 === 0 ? 18 : -14);
@@ -285,17 +301,11 @@ const playCursor = () => {
   const ring = document.createElement("div");
   ring.className = "cursor-ring";
   document.body.append(ring);
-  let x = 0;
-  let y = 0;
-  let rx = 0;
-  let ry = 0;
   window.addEventListener(
     "pointermove",
     (e) => {
-      x = e.clientX;
-      y = e.clientY;
-      animate(dot, { x, y, duration: 80, ease: "out(1)" });
-      animate(ring, { x, y, duration: 420, ease: "out(3)" });
+      animate(dot, { x: e.clientX, y: e.clientY, duration: 80, ease: "out(1)" });
+      animate(ring, { x: e.clientX, y: e.clientY, duration: 420, ease: "out(3)" });
     },
     { passive: true }
   );
@@ -329,7 +339,9 @@ const playPageLinks = () => {
     const a = e.target.closest("a[href]");
     if (!a) return;
     const href = a.getAttribute("href");
-    if (!href || href.startsWith("http") || href.startsWith("mailto") || href.startsWith("#") || a.target === "_blank") return;
+    if (!href || href.startsWith("http") || href.startsWith("mailto") || href.startsWith("#") || a.target === "_blank") {
+      return;
+    }
     e.preventDefault();
     const curtain = document.createElement("div");
     curtain.className = "curtain";
@@ -416,11 +428,11 @@ const playPage = () => {
   if (frames.length && !reduced) {
     whenVisible(frames[0], () => {
       animate(frames, {
-        clipPath: ["inset(100% 0 0 0)", "inset(0% 0 0 0)"],
         opacity: [0.4, 1],
+        y: [24, 0],
         delay: stagger(120),
         duration: 1000,
-        ease: "inOut(3)",
+        ease: "out(3)",
       });
     });
     frames.forEach((frame) => {
@@ -462,7 +474,6 @@ const playPage = () => {
     animate(galleryFigs, {
       opacity: [0, 1],
       x: [48, 0],
-      rotate: [3, 0],
       delay: stagger(80),
       duration: 720,
       ease: "out(3)",
@@ -474,7 +485,6 @@ const playPage = () => {
     animate(shorts, {
       opacity: [0, 1],
       y: [40, 0],
-      scale: [0.96, 1],
       delay: stagger(110),
       duration: 740,
       ease: "out(3)",
@@ -483,16 +493,13 @@ const playPage = () => {
 
   $$(".film-embed, .short-embed").forEach((el) => {
     whenVisible(el, () => {
-      animate(el, {
-        clipPath: ["inset(0 0 100% 0)", "inset(0 0 0% 0)"],
-        duration: 900,
-        ease: "inOut(3)",
-      });
+      animate(el, { opacity: [0, 1], y: [18, 0], duration: 800, ease: "out(3)" });
     });
   });
 };
 
 const playCurtain = () => {
+  if ($(".intro") && !$(".intro").classList.contains("is-gone")) return;
   const curtain = document.createElement("div");
   curtain.className = "curtain";
   document.body.append(curtain);
@@ -511,7 +518,7 @@ const playCurtain = () => {
 
 playCurtain();
 playIntro();
-playHero();
+if (!$(".intro") || $(".intro").classList.contains("is-gone")) playHero();
 playTicker();
 playProgress();
 playParallax();

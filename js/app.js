@@ -73,6 +73,9 @@
     e?.stopPropagation?.();
     if (typeof window.KM_playIntroLeave === "function") {
       window.KM_playIntroLeave();
+      setTimeout(() => {
+        if (intro && !intro.classList.contains("is-gone")) dismissIntro();
+      }, 1600);
       return;
     }
     dismissIntro();
