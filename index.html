@@ -3,10 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Kim Matt — Photography</title>
-    <meta name="description" content="Kim Matt is a photographer working in portrait, landscape, and interior image-making." />
-    <meta property="og:title" content="Kim Matt — Photography" />
-    <meta property="og:description" content="Selected work in portrait, landscape, and interior." />
+    <title>Matthew Suess — Photography & Film</title>
+    <meta name="description" content="Matthew Suess photographs IMSA and Franciscan athletics, and makes narrative films with Terra Bona Family." />
+    <meta property="og:title" content="Matthew Suess — Photography & Film" />
+    <meta property="og:description" content="IMSA, university sport, campus, and films with Terra Bona Family." />
     <meta property="og:image" content="assets/site/hero.jpg" />
     <link rel="icon" href="assets/site/favicon.svg" type="image/svg+xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -20,16 +20,21 @@
 
     <section class="intro" aria-label="Enter the studio">
       <div class="intro-inner">
-        <p class="intro-kicker">Photography</p>
-        <h1><span>Kim</span><span>Matt</span></h1>
+        <p class="intro-kicker">Photography & Film</p>
+        <h1><span class="line" data-first>Matthew</span><span class="line" data-last>Suess</span></h1>
         <button class="enter" type="button">Enter</button>
+        <svg class="intro-mark" viewBox="0 0 200 200" aria-hidden="true">
+          <circle class="ring ring-a" cx="100" cy="100" r="78" fill="none" stroke="currentColor" stroke-width="0.4" />
+          <circle class="ring ring-b" cx="100" cy="100" r="58" fill="none" stroke="currentColor" stroke-width="0.4" />
+        </svg>
       </div>
     </section>
 
     <header class="site-header">
-      <a class="wordmark" href="index.html">Kim Matt</a>
+      <a class="wordmark" href="index.html" data-site-name>Matthew Suess</a>
       <nav class="nav" aria-label="Primary">
         <a href="index.html" aria-current="page">Index</a>
+        <a href="films.html">Film</a>
         <a href="about.html">About</a>
         <a href="contact.html">Contact</a>
       </nav>
@@ -37,6 +42,7 @@
     </header>
     <nav class="mobile-nav" aria-label="Mobile">
       <a href="index.html">Index</a>
+      <a href="films.html">Film</a>
       <a href="about.html">About</a>
       <a href="contact.html">Contact</a>
     </nav>
@@ -46,8 +52,8 @@
       <div class="hero-shade"></div>
       <div class="hero-copy">
         <div>
-          <p>Selected work, 2023—2025</p>
-          <h2>Pictures first.</h2>
+          <p>IMSA · Franciscan Athletics</p>
+          <h2>Track and court.</h2>
         </div>
         <span class="scroll-hint">Scroll</span>
       </div>
@@ -70,17 +76,33 @@
       <div class="frames" data-frames></div>
     </section>
 
-    <section class="section statement">
-      <p class="kicker">Studio note</p>
-      <h2>The work is concerned with light as subject — the hour when a face, a room, or a coastline becomes something else.</h2>
+    <section class="section">
+      <div class="section-head">
+        <p class="kicker">Film</p>
+        <p class="kicker">Features &amp; shorts</p>
+      </div>
+      <div class="series-index" data-film-index></div>
     </section>
 
+    <section class="section statement">
+      <p class="kicker">Studio note</p>
+      <h2>Still pictures from the paddock, the court, and campus — narrative films with Terra Bona Family, and edited shorts for Star Wars Insider.</h2>
+    </section>
+
+    <div class="ticker" aria-hidden="true">
+      <div class="ticker-track">
+        <span>IMSA · Rolex 24 · Watkins Glen · Franciscan Athletics · Terra Bona Family · Star Wars Insider · New Milford · </span>
+        <span>IMSA · Rolex 24 · Watkins Glen · Franciscan Athletics · Terra Bona Family · Star Wars Insider · New Milford · </span>
+      </div>
+    </div>
+
     <footer class="site-footer">
-      <span data-site-name>Kim Matt</span>
+      <span data-site-name>Matthew Suess</span>
       <span>© <span data-year></span>  ·  All images remain with the author</span>
     </footer>
 
     <script src="js/data.js"></script>
     <script src="js/app.js"></script>
+    <script type="module" src="js/motion.js"></script>
   </body>
 </html>

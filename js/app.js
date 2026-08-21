@@ -9,25 +9,35 @@
   $$("[data-site-name]").forEach((el) => {
     el.textContent = SITE.name;
   });
+  $$("[data-first]").forEach((el) => {
+    el.textContent = SITE.firstName;
+  });
+  $$("[data-last]").forEach((el) => {
+    el.textContent = SITE.lastName;
+  });
+  $$("[data-location]").forEach((el) => {
+    el.textContent = SITE.location;
+  });
   $$("[data-email]").forEach((el) => {
-    el.textContent = SITE.email;
-    if (el.tagName === "A") el.href = `mailto:${SITE.email}`;
+    if (SITE.email) {
+      el.textContent = SITE.email;
+      if (el.tagName === "A") el.href = `mailto:${SITE.email}`;
+    } else {
+      el.textContent = "Inquiries on request";
+      if (el.tagName === "A") el.removeAttribute("href");
+    }
+  });
+  $$("[data-instagram]").forEach((el) => {
+    if (SITE.instagram) {
+      el.href = SITE.instagram;
+      el.hidden = false;
+    } else {
+      el.hidden = true;
+    }
   });
 
   const cursor = $(".cursor");
   if (cursor && matchMedia("(pointer: fine)").matches) {
-    let x = 0;
-    let y = 0;
-    window.addEventListener(
-      "pointermove",
-      (e) => {
-        x = e.clientX;
-        y = e.clientY;
-        cursor.style.transform = `translate(${x}px, ${y}px)`;
-      },
-      { passive: true }
-    );
-
     const hoverSel = "a, button, .series-row, .frame, .gallery img";
     document.addEventListener("pointerover", (e) => {
       if (e.target.closest(hoverSel)) cursor.classList.add("is-hover");
@@ -52,13 +62,31 @@
   };
   if (intro && !seen) {
     document.body.classList.add("intro-open");
-    enter?.addEventListener("click", dismissIntro);
-    intro.addEventListener("click", (e) => {
-      if (e.target === intro) dismissIntro();
-    });
   } else {
     intro?.classList.add("is-gone");
   }
+
+  window.KM_markEntered = dismissIntro;
+
+  const requestLeave = (e) => {
+    e?.preventDefault?.();
+    e?.stopPropagation?.();
+    if (typeof window.KM_playIntroLeave === "function") {
+      window.KM_playIntroLeave();
+      return;
+    }
+    dismissIntro();
+  };
+  enter?.addEventListener("click", requestLeave);
+  intro?.addEventListener("click", (e) => {
+    if (e.target.closest("a")) return;
+    requestLeave(e);
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key !== "Enter" && e.key !== " ") return;
+    if (!intro || intro.classList.contains("is-gone")) return;
+    requestLeave(e);
+  });
 
   const header = $(".site-header");
   let lastY = 0;
@@ -87,6 +115,22 @@
     }
   });
 
+  const bindPreview = (rows) => {
+    const preview = $(".preview");
+    const previewImg = preview?.querySelector("img");
+    if (!preview || !previewImg || !matchMedia("(pointer: fine)").matches) return;
+    rows.forEach((row) => {
+      row.addEventListener("mouseenter", () => {
+        previewImg.src = row.dataset.cover;
+        preview.classList.toggle("is-wide", row.dataset.wide === "1");
+        preview.classList.add("is-on");
+      });
+      row.addEventListener("mouseleave", () => {
+        preview.classList.remove("is-on", "is-wide");
+      });
+    });
+  };
+
   const indexRoot = $("[data-series-index]");
   if (indexRoot) {
     indexRoot.innerHTML = SERIES.map(
@@ -98,20 +142,42 @@
         <span class="year">${s.year}</span>
       </a>`
     ).join("");
+    bindPreview($$(".series-row", indexRoot));
+  }
 
-    const preview = $(".preview");
-    const previewImg = preview?.querySelector("img");
-    if (preview && previewImg && matchMedia("(pointer: fine)").matches) {
-      $$(".series-row", indexRoot).forEach((row) => {
-        row.addEventListener("mouseenter", () => {
-          previewImg.src = row.dataset.cover;
-          preview.classList.add("is-on");
-        });
-        row.addEventListener("mouseleave", () => {
-          preview.classList.remove("is-on");
-        });
-      });
-    }
+  const filmRoot = $("[data-film-index]");
+  if (filmRoot && typeof FILMS !== "undefined") {
+    filmRoot.innerHTML = FILMS.map(
+      (f) => `
+      <a class="series-row" href="films.html#${f.id}" data-cover="https://i.ytimg.com/vi/${f.youtubeId}/maxresdefault.jpg" data-wide="1" data-view>
+        <span class="num">${f.number}</span>
+        <h3>${f.title}</h3>
+        <span class="meta">${f.runtime}</span>
+        <span class="year">${f.year}</span>
+      </a>`
+    ).join("");
+    bindPreview($$(".series-row", filmRoot));
+  }
+
+  const shortsRoot = $("[data-shorts]");
+  if (shortsRoot && typeof SHORTS !== "undefined") {
+    shortsRoot.innerHTML = SHORTS.map(
+      (s) => `
+      <figure class="short">
+        <div class="short-embed">
+          <iframe
+            src="https://www.youtube-nocookie.com/embed/${s.id}"
+            title="${s.youtubeTitle}"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen
+          ></iframe>
+        </div>
+        <figcaption>
+          <strong>${s.title}</strong>
+          <span>${s.runtime} · ${s.views} views</span>
+        </figcaption>
+      </figure>`
+    ).join("");
   }
 
   const frames = $("[data-frames]");

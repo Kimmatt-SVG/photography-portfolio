@@ -1,4 +1,4 @@
-# Kim Matt — Photography
+# Matthew Suess — Photography
 
 A high-end photography portfolio built as static HTML, CSS, and JavaScript so it can live on **GitHub Pages** for free.
 
