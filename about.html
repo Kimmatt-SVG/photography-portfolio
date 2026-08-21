@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>About — Kim Matt</title>
+    <meta name="description" content="About photographer Kim Matt." />
+    <link rel="icon" href="assets/site/favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Outfit:wght@300;400;500&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <div class="grain" aria-hidden="true"></div>
+    <div class="cursor" aria-hidden="true"></div>
+
+    <header class="site-header">
+      <a class="wordmark" href="index.html">Kim Matt</a>
+      <nav class="nav" aria-label="Primary">
+        <a href="index.html">Index</a>
+        <a href="about.html" aria-current="page">About</a>
+        <a href="contact.html">Contact</a>
+      </nav>
+      <button class="nav-toggle" type="button" aria-expanded="false">Menu</button>
+    </header>
+    <nav class="mobile-nav" aria-label="Mobile">
+      <a href="index.html">Index</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+
+    <section class="page-hero">
+      <p class="kicker">Biography</p>
+      <h1>The studio.</h1>
+    </section>
+
+    <section class="about-grid">
+      <div class="about-copy">
+        <p>
+          Kim Matt is a photographer working between portrait, landscape, and the still interior.
+          The pictures favor patience over spectacle: available light, a slow sitting, a place allowed to remain itself.
+        </p>
+        <p>
+          Work is edited into named series rather than shown as a dump of files. Each chapter is a sitting,
+          a coastline, a house, or an hour of the city — sequenced the way a book is sequenced, with room
+          around the frame.
+        </p>
+        <p>
+          Commissions, editorials, and print inquiries are welcome. The studio travels.
+        </p>
+        <dl class="cv">
+          <div>
+            <dt>Based</dt>
+            <dd>United States, available for commission worldwide</dd>
+          </div>
+          <div>
+            <dt>Practice</dt>
+            <dd>Portrait · Editorial · Landscape · Interior</dd>
+          </div>
+          <div>
+            <dt>Inquiries</dt>
+            <dd><a data-email href="mailto:studio@kimmatt.com">studio@kimmatt.com</a></dd>
+          </div>
+        </dl>
+      </div>
+      <figure class="about-photo">
+        <img src="assets/site/studio.jpg" alt="Studio still, lights and set" />
+      </figure>
+    </section>
+
+    <footer class="site-footer">
+      <span data-site-name>Kim Matt</span>
+      <span>© <span data-year></span></span>
+    </footer>
+
+    <script src="js/data.js"></script>
+    <script src="js/app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Kim Matt — Photography</title>
+    <meta name="description" content="Kim Matt is a photographer working in portrait, landscape, and interior image-making." />
+    <meta property="og:title" content="Kim Matt — Photography" />
+    <meta property="og:description" content="Selected work in portrait, landscape, and interior." />
+    <meta property="og:image" content="assets/site/hero.jpg" />
+    <link rel="icon" href="assets/site/favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Outfit:wght@300;400;500&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <div class="grain" aria-hidden="true"></div>
+    <div class="cursor" aria-hidden="true"></div>
+
+    <section class="intro" aria-label="Enter the studio">
+      <div class="intro-inner">
+        <p class="intro-kicker">Photography</p>
+        <h1><span>Kim</span><span>Matt</span></h1>
+        <button class="enter" type="button">Enter</button>
+      </div>
+    </section>
+
+    <header class="site-header">
+      <a class="wordmark" href="index.html">Kim Matt</a>
+      <nav class="nav" aria-label="Primary">
+        <a href="index.html" aria-current="page">Index</a>
+        <a href="about.html">About</a>
+        <a href="contact.html">Contact</a>
+      </nav>
+      <button class="nav-toggle" type="button" aria-expanded="false">Menu</button>
+    </header>
+    <nav class="mobile-nav" aria-label="Mobile">
+      <a href="index.html">Index</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+
+    <section class="hero">
+      <img src="assets/site/hero.jpg" alt="Featured photograph from the studio" />
+      <div class="hero-shade"></div>
+      <div class="hero-copy">
+        <div>
+          <p>Selected work, 2023—2025</p>
+          <h2>Pictures first.</h2>
+        </div>
+        <span class="scroll-hint">Scroll</span>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <p class="kicker">Index</p>
+        <p class="kicker">Four series</p>
+      </div>
+      <div class="series-index" data-series-index></div>
+      <aside class="preview" aria-hidden="true"><img alt="" /></aside>
+    </section>
+
+    <section class="section" style="padding-top: 0">
+      <div class="section-head">
+        <p class="kicker">Selected frames</p>
+        <p class="kicker">From the archive</p>
+      </div>
+      <div class="frames" data-frames></div>
+    </section>
+
+    <section class="section statement">
+      <p class="kicker">Studio note</p>
+      <h2>The work is concerned with light as subject — the hour when a face, a room, or a coastline becomes something else.</h2>
+    </section>
+
+    <footer class="site-footer">
+      <span data-site-name>Kim Matt</span>
+      <span>© <span data-year></span>  ·  All images remain with the author</span>
+    </footer>
+
+    <script src="js/data.js"></script>
+    <script src="js/app.js"></script>
+  </body>
+</html>

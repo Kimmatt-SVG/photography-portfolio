@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>After Light — Kim Matt</title>
+    <meta name="description" content="Faces at the edge of day. A portrait series by Kim Matt." />
+    <link rel="icon" href="../assets/site/favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Outfit:wght@300;400;500&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../css/styles.css" />
+  </head>
+  <body data-series="after-light">
+    <div class="grain" aria-hidden="true"></div>
+    <div class="cursor" aria-hidden="true"></div>
+    <header class="site-header">
+      <a class="wordmark" href="../index.html">Kim Matt</a>
+      <nav class="nav" aria-label="Primary">
+        <a href="../index.html">Index</a>
+        <a href="../about.html">About</a>
+        <a href="../contact.html">Contact</a>
+      </nav>
+      <button class="nav-toggle" type="button" aria-expanded="false">Menu</button>
+    </header>
+    <nav class="mobile-nav" aria-label="Mobile">
+      <a href="../index.html">Index</a>
+      <a href="../about.html">About</a>
+      <a href="../contact.html">Contact</a>
+    </nav>
+    <section class="series-top">
+      <div>
+        <p class="kicker" data-series-kicker></p>
+        <h1 data-series-title></h1>
+      </div>
+      <p data-series-statement></p>
+    </section>
+    <section class="gallery-wrap">
+      <div class="gallery" data-gallery></div>
+      <div class="gallery-nav">
+        <a class="ghost" data-prev href="#"></a>
+        <span class="counter" data-counter></span>
+        <a class="ghost" data-next href="#"></a>
+      </div>
+    </section>
+    <div class="lightbox" role="dialog" aria-modal="true" aria-label="Full photograph">
+      <img alt="" />
+    </div>
+    <footer class="site-footer">
+      <span data-site-name>Kim Matt</span>
+      <span>Use arrow keys to move through the series</span>
+    </footer>
+    <script src="../js/data.js"></script>
+    <script src="../js/app.js"></script>
+  </body>
+</html>
