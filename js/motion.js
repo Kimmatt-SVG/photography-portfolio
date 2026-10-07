@@ -295,32 +295,6 @@ const playTilt = () => {
   });
 };
 
-const playCursor = () => {
-  const dot = $(".cursor");
-  if (!dot || !fine || reduced) return;
-  const ring = document.createElement("div");
-  ring.className = "cursor-ring";
-  document.body.append(ring);
-  window.addEventListener(
-    "pointermove",
-    (e) => {
-      animate(dot, { x: e.clientX, y: e.clientY, duration: 80, ease: "out(1)" });
-      animate(ring, { x: e.clientX, y: e.clientY, duration: 420, ease: "out(3)" });
-    },
-    { passive: true }
-  );
-  document.addEventListener("pointerover", (e) => {
-    if (e.target.closest("a, button, .series-row, .frame, .gallery img")) {
-      animate(ring, { scale: 1.85, duration: 280, ease: "out(3)" });
-    }
-  });
-  document.addEventListener("pointerout", (e) => {
-    if (e.target.closest("a, button, .series-row, .frame, .gallery img")) {
-      animate(ring, { scale: 1, duration: 280, ease: "out(3)" });
-    }
-  });
-};
-
 const playGrain = () => {
   const grain = $(".grain");
   if (!grain || reduced) return;
@@ -566,7 +540,6 @@ playProgress();
 playParallax();
 playMagnetic();
 playTilt();
-playCursor();
 playGrain();
 playPageLinks();
 playPage();

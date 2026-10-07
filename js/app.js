@@ -36,22 +36,6 @@
     }
   });
 
-  const cursor = $(".cursor");
-  if (cursor && matchMedia("(pointer: fine)").matches) {
-    const hoverSel = "a, button, .series-row, .frame, .gallery img";
-    document.addEventListener("pointerover", (e) => {
-      if (e.target.closest(hoverSel)) cursor.classList.add("is-hover");
-      if (e.target.closest("[data-view]")) cursor.classList.add("is-view");
-    });
-    document.addEventListener("pointerout", (e) => {
-      if (e.target.closest(hoverSel)) cursor.classList.remove("is-hover");
-      if (e.target.closest("[data-view]")) cursor.classList.remove("is-view");
-    });
-  } else {
-    cursor?.remove();
-    document.body.style.cursor = "auto";
-  }
-
   const intro = $(".intro");
   const enter = $(".enter");
   const seen = sessionStorage.getItem("km-entered");
