@@ -296,16 +296,35 @@ button {
 
 .hero {
   position: relative;
-  height: 100svh;
-  min-height: 640px;
+  height: min(62svh, 36rem);
+  min-height: 22rem;
   color: var(--ivory);
   overflow: hidden;
 }
 
+.hero-stage {
+  position: absolute;
+  inset: 0;
+}
+
+.hero-stage img,
 .hero img {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center;
+}
+
+.hero-stage img {
+  opacity: 0;
+  transition: opacity 1.15s ease;
+}
+
+.hero-stage img.is-on {
+  opacity: 1;
+  z-index: 1;
 }
 
 .intro-mark {
@@ -373,7 +392,7 @@ button {
 .hero-copy h2 {
   margin: 0;
   font-family: "Cormorant Garamond", serif;
-  font-size: clamp(3rem, 7vw, 6.5rem);
+  font-size: clamp(2.4rem, 5.5vw, 4.6rem);
   font-weight: 400;
   font-style: italic;
   line-height: 0.9;
@@ -467,11 +486,6 @@ button {
 
 .word {
   display: inline-block;
-}
-
-.frames,
-.shorts {
-  perspective: 1100px;
 }
 
 .kicker {

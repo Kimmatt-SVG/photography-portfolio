@@ -173,13 +173,13 @@ const playHero = () => {
   const hero = $(".hero");
   if (!hero || reduced || heroPlayed) return;
   heroPlayed = true;
-  const img = $("img", hero);
+  const stage = $(".hero-stage", hero) || $("img", hero);
   const copy = $$(".hero-copy p, .hero-copy h2, .scroll-hint");
-  if (img) {
-    animate(img, { scale: [1.12, 1], duration: 2400, ease: "out(2)" });
+  if (stage) {
+    animate(stage, { scale: [1.08, 1], duration: 2400, ease: "out(2)" });
     try {
-      animate(img, {
-        y: 72,
+      animate(stage, {
+        y: 48,
         ease: "linear",
         autoplay: onScroll({
           target: hero,
@@ -211,17 +211,33 @@ const playHero = () => {
     });
   }
 
-  if (img && fine) {
+  if (stage && fine) {
     hero.addEventListener("pointermove", (e) => {
       const r = hero.getBoundingClientRect();
       const px = (e.clientX - r.left) / r.width - 0.5;
-      animate(img, {
-        x: px * 24,
+      animate(stage, {
+        x: px * 18,
         duration: 650,
         ease: "out(3)",
       });
     });
   }
+};
+
+const playHeroCycle = () => {
+  const slides = $$(".hero-stage img");
+  if (slides.length < 2) return;
+  let index = Math.max(
+    0,
+    slides.findIndex((img) => img.classList.contains("is-on"))
+  );
+  const advance = () => {
+    slides[index].classList.remove("is-on");
+    index = (index + 1) % slides.length;
+    slides[index].classList.add("is-on");
+  };
+  if (reduced) return;
+  setInterval(advance, 10000);
 };
 
 const playTicker = () => {
@@ -276,21 +292,6 @@ const playMagnetic = () => {
     });
     el.addEventListener("pointerleave", () => {
       animate(el, { x: 0, y: 0, duration: 420, ease: "out(4)" });
-    });
-  });
-};
-
-const playTilt = () => {
-  if (!fine || reduced) return;
-  $$(".frame, .short, .preview").forEach((el) => {
-    el.addEventListener("pointermove", (e) => {
-      const r = el.getBoundingClientRect();
-      const rx = ((e.clientY - r.top) / r.height - 0.5) * -8;
-      const ry = ((e.clientX - r.left) / r.width - 0.5) * 10;
-      animate(el, { rotateX: rx, rotateY: ry, duration: 350, ease: "out(3)" });
-    });
-    el.addEventListener("pointerleave", () => {
-      animate(el, { rotateX: 0, rotateY: 0, duration: 500, ease: "out(4)" });
     });
   });
 };
@@ -539,7 +540,7 @@ playTicker();
 playProgress();
 playParallax();
 playMagnetic();
-playTilt();
+playHeroCycle();
 playGrain();
 playPageLinks();
 playPage();

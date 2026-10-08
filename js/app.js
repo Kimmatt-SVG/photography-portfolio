@@ -121,6 +121,20 @@
     });
   };
 
+  const heroStage = $(".hero-stage");
+  if (heroStage && typeof HERO_SLIDES !== "undefined") {
+    const existing = new Set($$("img", heroStage).map((img) => img.getAttribute("src")));
+    HERO_SLIDES.forEach((slide, i) => {
+      if (existing.has(slide.src)) return;
+      const img = document.createElement("img");
+      img.src = slide.src;
+      img.alt = slide.alt;
+      img.decoding = "async";
+      if (i > 0) img.loading = "eager";
+      heroStage.append(img);
+    });
+  }
+
   const indexRoot = $("[data-series-index]");
   if (indexRoot) {
     indexRoot.innerHTML = SERIES.map(

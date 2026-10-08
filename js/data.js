@@ -88,6 +88,17 @@ const SHORTS = [
   },
 ];
 
+const HERO_SLIDES = [
+  { src: "assets/site/hero.jpg", alt: "JDC-Miller Porsche 963 at night, Rolex 24 At Daytona" },
+  { src: "assets/work/after-light/03.jpg", alt: "Michelin Pilot Challenge cars head-on at Daytona" },
+  { src: "assets/work/after-light/05.jpg", alt: "GT3 cars through a Daytona corner at the Rolex 24" },
+  { src: "assets/work/after-light/06.jpg", alt: "Corvette Racing Nos. 3 and 4 during a night pit stop" },
+  { src: "assets/work/after-light/01.jpg", alt: "Acura ARX-06 No. 40 on the lift in the Daytona garage" },
+  { src: "assets/work/after-light/11.jpg", alt: "Geico Porsche pit stop, refueling at the Rolex 24" },
+  { src: "assets/work/salt-stone/19.jpg", alt: "Two-handed backhand through the net, Franciscan Tennis" },
+  { src: "assets/work/salt-stone/15.jpg", alt: "Serve at Spring Break Tennis, Franciscan" },
+];
+
 const SERIES = [
   {
     id: "after-light",
