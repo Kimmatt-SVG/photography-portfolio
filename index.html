@@ -16,7 +16,6 @@
   </head>
   <body>
     <div class="grain" aria-hidden="true"></div>
-    <div class="cursor" aria-hidden="true"></div>
 
     <section class="intro" aria-label="Enter the studio">
       <div class="intro-inner">
@@ -32,7 +31,6 @@
     </section>
 
     <header class="site-header">
-      <button class="nav-toggle" type="button" aria-expanded="false">Menu<span class="nav-toggle-mark" aria-hidden="true"></span></button>
       <a class="wordmark" href="index.html" data-site-name>Matthew Suess</a>
       <nav class="nav" aria-label="Primary">
         <a href="index.html" aria-current="page">Index</a>
@@ -41,23 +39,10 @@
         <a href="contact.html">Contact</a>
       </nav>
     </header>
-    <nav class="mobile-nav" aria-label="Menu">
-      <a href="index.html">Index</a>
-      <a href="films.html">Film</a>
-      <a href="about.html">About</a>
-      <a href="contact.html">Contact</a>
-    </nav>
 
     <section class="hero">
-      <img src="assets/site/hero.jpg" alt="JDC-Miller Porsche 963 at night, Rolex 24 At Daytona" />
+      <div class="hero-stage"></div>
       <div class="hero-shade"></div>
-      <div class="hero-copy">
-        <div>
-          <p>IMSA · Franciscan Athletics</p>
-          <h2>Track and court.</h2>
-        </div>
-        <span class="scroll-hint">Scroll</span>
-      </div>
     </section>
 
     <section class="section">
@@ -66,15 +51,6 @@
         <p class="kicker">Four series</p>
       </div>
       <div class="series-index" data-series-index></div>
-      <aside class="preview" aria-hidden="true"><img alt="" /></aside>
-    </section>
-
-    <section class="section" style="padding-top: 0">
-      <div class="section-head">
-        <p class="kicker">Selected frames</p>
-        <p class="kicker">From the archive</p>
-      </div>
-      <div class="frames" data-frames></div>
     </section>
 
     <section class="section">
@@ -83,11 +59,6 @@
         <p class="kicker">Features &amp; shorts</p>
       </div>
       <div class="series-index" data-film-index></div>
-    </section>
-
-    <section class="section statement">
-      <p class="kicker">Studio note</p>
-      <h2>Still pictures from the paddock, the court, and campus — narrative films with Terra Bona Family, and edited shorts for Star Wars Insider.</h2>
     </section>
 
     <div class="ticker" aria-hidden="true">
@@ -104,6 +75,6 @@
 
     <script src="js/data.js"></script>
     <script src="js/app.js"></script>
-    <script type="module" src="js/motion.js?v=4"></script>
+    <script type="module" src="js/motion.js?v=5"></script>
   </body>
 </html>

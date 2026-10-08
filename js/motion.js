@@ -21,17 +21,6 @@ const splitChars = (el) => {
   return $$(".char-inner", el);
 };
 
-const splitWords = (el) => {
-  if (!el || el.dataset.words === "1") return $$(".word", el);
-  el.dataset.words = "1";
-  el.innerHTML = el.textContent
-    .trim()
-    .split(/\s+/)
-    .map((w) => `<span class="word">${w}</span>`)
-    .join(" ");
-  return $$(".word", el);
-};
-
 const whenVisible = (el, fn) => {
   if (!el) return;
   if (reduced) return fn();
@@ -173,13 +162,12 @@ const playHero = () => {
   const hero = $(".hero");
   if (!hero || reduced || heroPlayed) return;
   heroPlayed = true;
-  const img = $("img", hero);
-  const copy = $$(".hero-copy p, .hero-copy h2, .scroll-hint");
-  if (img) {
-    animate(img, { scale: [1.12, 1], duration: 2400, ease: "out(2)" });
+  const stage = $(".hero-stage", hero) || $("img", hero);
+  if (stage) {
+    animate(stage, { scale: [1.08, 1], duration: 2400, ease: "out(2)" });
     try {
-      animate(img, {
-        y: 72,
+      animate(stage, {
+        y: 48,
         ease: "linear",
         autoplay: onScroll({
           target: hero,
@@ -192,37 +180,35 @@ const playHero = () => {
       /* scroll sync is optional */
     }
   }
-  animate(copy, {
-    opacity: [0, 1],
-    y: [28, 0],
-    delay: stagger(90, { start: 240 }),
-    duration: 820,
-    ease: "out(3)",
-  });
-  const hint = $(".scroll-hint");
-  if (hint) {
-    animate(hint, {
-      y: [0, 10],
-      opacity: [0.45, 1],
-      duration: 1000,
-      ease: "inOutSine",
-      loop: true,
-      alternate: true,
-    });
-  }
 
-  if (img && fine) {
+  if (stage && fine) {
     hero.addEventListener("pointermove", (e) => {
       const r = hero.getBoundingClientRect();
       const px = (e.clientX - r.left) / r.width - 0.5;
-      animate(img, {
-        x: px * 24,
+      animate(stage, {
+        x: px * 18,
         duration: 650,
         ease: "out(3)",
       });
     });
   }
 };
+
+let heroCycleStarted = false;
+const playHeroCycle = () => {
+  if (heroCycleStarted) return;
+  const slides = $$(".hero-stage img");
+  if (slides.length < 2 || reduced) return;
+  heroCycleStarted = true;
+  setInterval(() => {
+    const current = slides.findIndex((img) => img.classList.contains("is-on"));
+    let next = current;
+    while (next === current) next = Math.floor(Math.random() * slides.length);
+    slides[current]?.classList.remove("is-on");
+    slides[next].classList.add("is-on");
+  }, 10000);
+};
+window.KM_playHeroCycle = playHeroCycle;
 
 const playTicker = () => {
   const track = $(".ticker-track");
@@ -251,7 +237,7 @@ const playProgress = () => {
 
 const playParallax = () => {
   if (reduced) return;
-  const frames = $$(".frame img, .about-photo img");
+  const frames = $$(".about-photo img");
   window.addEventListener(
     "scroll",
     () => {
@@ -277,47 +263,6 @@ const playMagnetic = () => {
     el.addEventListener("pointerleave", () => {
       animate(el, { x: 0, y: 0, duration: 420, ease: "out(4)" });
     });
-  });
-};
-
-const playTilt = () => {
-  if (!fine || reduced) return;
-  $$(".frame, .short, .preview").forEach((el) => {
-    el.addEventListener("pointermove", (e) => {
-      const r = el.getBoundingClientRect();
-      const rx = ((e.clientY - r.top) / r.height - 0.5) * -8;
-      const ry = ((e.clientX - r.left) / r.width - 0.5) * 10;
-      animate(el, { rotateX: rx, rotateY: ry, duration: 350, ease: "out(3)" });
-    });
-    el.addEventListener("pointerleave", () => {
-      animate(el, { rotateX: 0, rotateY: 0, duration: 500, ease: "out(4)" });
-    });
-  });
-};
-
-const playCursor = () => {
-  const dot = $(".cursor");
-  if (!dot || !fine || reduced) return;
-  const ring = document.createElement("div");
-  ring.className = "cursor-ring";
-  document.body.append(ring);
-  window.addEventListener(
-    "pointermove",
-    (e) => {
-      animate(dot, { x: e.clientX, y: e.clientY, duration: 80, ease: "out(1)" });
-      animate(ring, { x: e.clientX, y: e.clientY, duration: 420, ease: "out(3)" });
-    },
-    { passive: true }
-  );
-  document.addEventListener("pointerover", (e) => {
-    if (e.target.closest("a, button, .series-row, .frame, .gallery img")) {
-      animate(ring, { scale: 1.85, duration: 280, ease: "out(3)" });
-    }
-  });
-  document.addEventListener("pointerout", (e) => {
-    if (e.target.closest("a, button, .series-row, .frame, .gallery img")) {
-      animate(ring, { scale: 1, duration: 280, ease: "out(3)" });
-    }
   });
 };
 
@@ -380,19 +325,6 @@ const playPage = () => {
     });
   });
 
-  $$(".statement h2").forEach((el) => {
-    const words = splitWords(el);
-    whenVisible(el, () => {
-      animate(words, {
-        opacity: [0, 1],
-        y: [22, 0],
-        delay: stagger(28),
-        duration: 640,
-        ease: "out(3)",
-      });
-    });
-  });
-
   $$(".about-copy p, .cv div, .film-head, .film p").forEach((el) => {
     el.classList.add("will-animate");
     whenVisible(el, () => {
@@ -413,28 +345,6 @@ const playPage = () => {
     });
   }
 
-  const frames = $$(".frame");
-  if (frames.length && !reduced) {
-    whenVisible(frames[0], () => {
-      animate(frames, {
-        opacity: [0.4, 1],
-        y: [24, 0],
-        delay: stagger(120),
-        duration: 1000,
-        ease: "out(3)",
-      });
-    });
-    frames.forEach((frame) => {
-      const img = $("img", frame);
-      frame.addEventListener("pointerenter", () => {
-        if (img) animate(img, { scale: 1.08, duration: 900, ease: "out(3)" });
-      });
-      frame.addEventListener("pointerleave", () => {
-        if (img) animate(img, { scale: 1, duration: 800, ease: "out(3)" });
-      });
-    });
-  }
-
   $$(".series-row, .ghost").forEach((el) => {
     el.addEventListener("pointerenter", () => {
       if (reduced) return;
@@ -446,24 +356,12 @@ const playPage = () => {
     });
   });
 
-  const preview = $(".preview");
-  if (preview && !reduced) {
-    const obs = new MutationObserver(() => {
-      if (preview.classList.contains("is-on")) {
-        animate(preview, { scale: [0.86, 1], rotate: [-2, 0], duration: 480, ease: "out(4)" });
-        const img = $("img", preview);
-        if (img) animate(img, { scale: [1.12, 1], duration: 900, ease: "out(3)" });
-      }
-    });
-    obs.observe(preview, { attributes: true, attributeFilter: ["class"] });
-  }
-
   const galleryFigs = $$("[data-gallery] figure");
   if (galleryFigs.length && !reduced) {
     animate(galleryFigs, {
       opacity: [0, 1],
-      x: [48, 0],
-      delay: stagger(80),
+      y: [24, 0],
+      delay: stagger(60),
       duration: 720,
       ease: "out(3)",
     });
@@ -505,59 +403,6 @@ const playCurtain = () => {
   });
 };
 
-const playMenu = () => {
-  const panel = $(".mobile-nav");
-  const toggle = $(".nav-toggle");
-  if (!panel) return;
-  const links = $$("a", panel);
-  let open = panel.classList.contains("is-open");
-  let anim;
-  const setMenu = (next) => {
-    if (next === open) return;
-    open = next;
-    anim?.pause();
-    toggle?.setAttribute("aria-expanded", String(open));
-    if (toggle) toggle.textContent = open ? "Close" : "Menu";
-    if (reduced) {
-      panel.classList.toggle("is-open", open);
-      panel.style.opacity = open ? "1" : "0";
-      panel.style.visibility = open ? "visible" : "hidden";
-      return;
-    }
-    if (open) {
-      panel.classList.add("is-open");
-      panel.style.visibility = "visible";
-      anim = createTimeline({ defaults: { ease: "out(3)" } });
-      anim.add(panel, { opacity: [0, 1], y: [-14, 0], duration: 420 }, 0);
-      if (links.length) {
-        anim.add(
-          links,
-          {
-            opacity: [0, 1],
-            x: [-16, 0],
-            delay: stagger(55),
-            duration: 420,
-          },
-          80
-        );
-      }
-    } else {
-      anim = animate(panel, {
-        opacity: 0,
-        y: -10,
-        duration: 280,
-        ease: "in(2)",
-        onComplete: () => {
-          panel.classList.remove("is-open");
-          panel.style.visibility = "hidden";
-        },
-      });
-    }
-  };
-  window.KM_setMenu = setMenu;
-};
-
-playMenu();
 playCurtain();
 playIntro();
 if (!$(".intro") || $(".intro").classList.contains("is-gone")) playHero();
@@ -565,8 +410,7 @@ playTicker();
 playProgress();
 playParallax();
 playMagnetic();
-playTilt();
-playCursor();
+playHeroCycle();
 playGrain();
 playPageLinks();
 playPage();
