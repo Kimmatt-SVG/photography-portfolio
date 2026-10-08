@@ -75,34 +75,44 @@
     requestLeave(e);
   });
 
-  const bindPreview = (rows) => {
-    const preview = $(".preview");
-    const previewImg = preview?.querySelector("img");
-    if (!preview || !previewImg || !matchMedia("(pointer: fine)").matches) return;
-    rows.forEach((row) => {
-      row.addEventListener("mouseenter", () => {
-        previewImg.src = row.dataset.cover;
-        preview.classList.toggle("is-wide", row.dataset.wide === "1");
-        preview.classList.add("is-on");
-      });
-      row.addEventListener("mouseleave", () => {
-        preview.classList.remove("is-on", "is-wide");
-      });
-    });
-  };
-
   const heroStage = $(".hero-stage");
-  if (heroStage && typeof HERO_SLIDES !== "undefined") {
-    const existing = new Set($$("img", heroStage).map((img) => img.getAttribute("src")));
-    HERO_SLIDES.forEach((slide, i) => {
-      if (existing.has(slide.src)) return;
-      const img = document.createElement("img");
-      img.src = slide.src;
-      img.alt = slide.alt;
-      img.decoding = "async";
-      if (i > 0) img.loading = "eager";
-      heroStage.append(img);
-    });
+  if (heroStage && typeof SERIES !== "undefined") {
+    const shuffle = (list) => {
+      const pool = [...list];
+      for (let i = pool.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [pool[i], pool[j]] = [pool[j], pool[i]];
+      }
+      return pool;
+    };
+    const isLandscape = (src) =>
+      new Promise((resolve) => {
+        const probe = new Image();
+        probe.onload = () => resolve(probe.naturalWidth > probe.naturalHeight);
+        probe.onerror = () => resolve(false);
+        probe.src = src;
+      });
+    const fillHero = (slides) => {
+      if (!slides.length) return;
+      heroStage.replaceChildren();
+      slides.forEach((slide, i) => {
+        const img = document.createElement("img");
+        img.src = slide.src;
+        img.alt = slide.alt;
+        img.decoding = "async";
+        if (i === 0) img.classList.add("is-on");
+        heroStage.append(img);
+      });
+      window.KM_playHeroCycle?.();
+    };
+    Promise.all(
+      SERIES.map(async (s) => {
+        const checked = await Promise.all(
+          s.images.map(async (slide) => ({ slide, wide: await isLandscape(slide.src) }))
+        );
+        return shuffle(checked.filter((item) => item.wide).map((item) => item.slide)).slice(0, 3);
+      })
+    ).then((groups) => fillHero(shuffle(groups.flat())));
   }
 
   const indexRoot = $("[data-series-index]");
@@ -116,7 +126,6 @@
         <span class="year">${s.year}</span>
       </a>`
     ).join("");
-    bindPreview($$(".series-row", indexRoot));
   }
 
   const filmRoot = $("[data-film-index]");
@@ -130,7 +139,6 @@
         <span class="year">${f.year}</span>
       </a>`
     ).join("");
-    bindPreview($$(".series-row", filmRoot));
   }
 
   const shortsRoot = $("[data-shorts]");
@@ -154,19 +162,6 @@
     ).join("");
   }
 
-  const frames = $("[data-frames]");
-  if (frames) {
-    frames.innerHTML = SERIES.slice(0, 3)
-      .map(
-        (s) => `
-        <a class="frame" href="work/${s.id}.html" data-view>
-          <img src="${s.cover}" alt="${s.title}" />
-          <span>${s.title}</span>
-        </a>`
-      )
-      .join("");
-  }
-
   const seriesId = document.body.dataset.series;
   if (seriesId) {
     const series = SERIES.find((s) => s.id === seriesId);
@@ -187,17 +182,10 @@
         .join("");
 
       const counter = $("[data-counter]");
-      const updateCount = () => {
-        const figures = $$("figure", gallery);
-        const left = gallery.scrollLeft;
-        let idx = 0;
-        figures.forEach((fig, i) => {
-          if (fig.offsetLeft - gallery.offsetLeft <= left + 40) idx = i;
-        });
-        if (counter) counter.textContent = `${String(idx + 1).padStart(2, "0")} / ${String(series.images.length).padStart(2, "0")}`;
-      };
-      gallery.addEventListener("scroll", updateCount, { passive: true });
-      updateCount();
+      if (counter) {
+        const n = series.images.length;
+        counter.textContent = `${String(n).padStart(2, "0")} photographs`;
+      }
 
       const prev = SERIES[(SERIES.findIndex((s) => s.id === seriesId) + SERIES.length - 1) % SERIES.length];
       const next = SERIES[(SERIES.findIndex((s) => s.id === seriesId) + 1) % SERIES.length];
@@ -214,17 +202,26 @@
 
       const lightbox = $(".lightbox");
       const lightImg = lightbox?.querySelector("img");
+      let lightIndex = 0;
+      const showLight = (i) => {
+        if (!lightbox || !lightImg) return;
+        lightIndex = (i + series.images.length) % series.images.length;
+        const frame = series.images[lightIndex];
+        lightImg.src = `../${frame.src}`;
+        lightImg.alt = frame.alt;
+        lightbox.classList.add("is-open");
+      };
       gallery.addEventListener("click", (e) => {
         const img = e.target.closest("img");
-        if (!img || !lightbox) return;
-        lightImg.src = img.dataset.full;
-        lightbox.classList.add("is-open");
+        if (!img) return;
+        showLight(Number(img.dataset.index) || 0);
       });
       lightbox?.addEventListener("click", () => lightbox.classList.remove("is-open"));
       window.addEventListener("keydown", (e) => {
         if (e.key === "Escape") lightbox?.classList.remove("is-open");
-        if (e.key === "ArrowRight") gallery.scrollBy({ left: 420, behavior: "smooth" });
-        if (e.key === "ArrowLeft") gallery.scrollBy({ left: -420, behavior: "smooth" });
+        if (!lightbox?.classList.contains("is-open")) return;
+        if (e.key === "ArrowRight") showLight(lightIndex + 1);
+        if (e.key === "ArrowLeft") showLight(lightIndex - 1);
       });
     }
   }

@@ -21,17 +21,6 @@ const splitChars = (el) => {
   return $$(".char-inner", el);
 };
 
-const splitWords = (el) => {
-  if (!el || el.dataset.words === "1") return $$(".word", el);
-  el.dataset.words = "1";
-  el.innerHTML = el.textContent
-    .trim()
-    .split(/\s+/)
-    .map((w) => `<span class="word">${w}</span>`)
-    .join(" ");
-  return $$(".word", el);
-};
-
 const whenVisible = (el, fn) => {
   if (!el) return;
   if (reduced) return fn();
@@ -174,7 +163,6 @@ const playHero = () => {
   if (!hero || reduced || heroPlayed) return;
   heroPlayed = true;
   const stage = $(".hero-stage", hero) || $("img", hero);
-  const copy = $$(".hero-copy p, .hero-copy h2, .scroll-hint");
   if (stage) {
     animate(stage, { scale: [1.08, 1], duration: 2400, ease: "out(2)" });
     try {
@@ -192,24 +180,6 @@ const playHero = () => {
       /* scroll sync is optional */
     }
   }
-  animate(copy, {
-    opacity: [0, 1],
-    y: [28, 0],
-    delay: stagger(90, { start: 240 }),
-    duration: 820,
-    ease: "out(3)",
-  });
-  const hint = $(".scroll-hint");
-  if (hint) {
-    animate(hint, {
-      y: [0, 10],
-      opacity: [0.45, 1],
-      duration: 1000,
-      ease: "inOutSine",
-      loop: true,
-      alternate: true,
-    });
-  }
 
   if (stage && fine) {
     hero.addEventListener("pointermove", (e) => {
@@ -224,21 +194,21 @@ const playHero = () => {
   }
 };
 
+let heroCycleStarted = false;
 const playHeroCycle = () => {
+  if (heroCycleStarted) return;
   const slides = $$(".hero-stage img");
-  if (slides.length < 2) return;
-  let index = Math.max(
-    0,
-    slides.findIndex((img) => img.classList.contains("is-on"))
-  );
-  const advance = () => {
-    slides[index].classList.remove("is-on");
-    index = (index + 1) % slides.length;
-    slides[index].classList.add("is-on");
-  };
-  if (reduced) return;
-  setInterval(advance, 10000);
+  if (slides.length < 2 || reduced) return;
+  heroCycleStarted = true;
+  setInterval(() => {
+    const current = slides.findIndex((img) => img.classList.contains("is-on"));
+    let next = current;
+    while (next === current) next = Math.floor(Math.random() * slides.length);
+    slides[current]?.classList.remove("is-on");
+    slides[next].classList.add("is-on");
+  }, 10000);
 };
+window.KM_playHeroCycle = playHeroCycle;
 
 const playTicker = () => {
   const track = $(".ticker-track");
@@ -267,7 +237,7 @@ const playProgress = () => {
 
 const playParallax = () => {
   if (reduced) return;
-  const frames = $$(".frame img, .about-photo img");
+  const frames = $$(".about-photo img");
   window.addEventListener(
     "scroll",
     () => {
@@ -355,19 +325,6 @@ const playPage = () => {
     });
   });
 
-  $$(".statement h2").forEach((el) => {
-    const words = splitWords(el);
-    whenVisible(el, () => {
-      animate(words, {
-        opacity: [0, 1],
-        y: [22, 0],
-        delay: stagger(28),
-        duration: 640,
-        ease: "out(3)",
-      });
-    });
-  });
-
   $$(".about-copy p, .cv div, .film-head, .film p").forEach((el) => {
     el.classList.add("will-animate");
     whenVisible(el, () => {
@@ -388,28 +345,6 @@ const playPage = () => {
     });
   }
 
-  const frames = $$(".frame");
-  if (frames.length && !reduced) {
-    whenVisible(frames[0], () => {
-      animate(frames, {
-        opacity: [0.4, 1],
-        y: [24, 0],
-        delay: stagger(120),
-        duration: 1000,
-        ease: "out(3)",
-      });
-    });
-    frames.forEach((frame) => {
-      const img = $("img", frame);
-      frame.addEventListener("pointerenter", () => {
-        if (img) animate(img, { scale: 1.08, duration: 900, ease: "out(3)" });
-      });
-      frame.addEventListener("pointerleave", () => {
-        if (img) animate(img, { scale: 1, duration: 800, ease: "out(3)" });
-      });
-    });
-  }
-
   $$(".series-row, .ghost").forEach((el) => {
     el.addEventListener("pointerenter", () => {
       if (reduced) return;
@@ -421,24 +356,12 @@ const playPage = () => {
     });
   });
 
-  const preview = $(".preview");
-  if (preview && !reduced) {
-    const obs = new MutationObserver(() => {
-      if (preview.classList.contains("is-on")) {
-        animate(preview, { scale: [0.86, 1], rotate: [-2, 0], duration: 480, ease: "out(4)" });
-        const img = $("img", preview);
-        if (img) animate(img, { scale: [1.12, 1], duration: 900, ease: "out(3)" });
-      }
-    });
-    obs.observe(preview, { attributes: true, attributeFilter: ["class"] });
-  }
-
   const galleryFigs = $$("[data-gallery] figure");
   if (galleryFigs.length && !reduced) {
     animate(galleryFigs, {
       opacity: [0, 1],
-      x: [48, 0],
-      delay: stagger(80),
+      y: [24, 0],
+      delay: stagger(60),
       duration: 720,
       ease: "out(3)",
     });
